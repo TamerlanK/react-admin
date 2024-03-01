@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from "react"
+import React, { createContext, useState, useEffect, ReactNode } from "react"
 import { useNavigate } from "react-router-dom"
 
 interface UserData {
@@ -27,8 +27,18 @@ interface AuthProviderProps {
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<UserData | null>(null)
-  const [token, setToken] = useState<string>(localStorage.getItem("site") || "")
+  const [token, setToken] = useState<string>(() => {
+    const storedToken = localStorage.getItem("token")
+    return storedToken || ""
+  })
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("user")
+    if (storedUserData) {
+      setUser(JSON.parse(storedUserData))
+    }
+  }, [])
 
   const loginAction = async (data: { username: string; password: string }) => {
     try {
@@ -39,11 +49,13 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         },
         body: JSON.stringify(data),
       })
-      const userData = await response.json()
+
       if (response.ok) {
+        const userData: UserData = await response.json()
         setUser(userData)
         setToken(userData.token)
-        localStorage.setItem("site", userData.token)
+        localStorage.setItem("user", JSON.stringify(userData))
+        localStorage.setItem("token", userData.token)
         navigate("/dashboard")
       } else {
         throw new Error("Failed to log in")
@@ -56,7 +68,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logOut = () => {
     setUser(null)
     setToken("")
-    localStorage.removeItem("site")
+    localStorage.removeItem("user")
+    localStorage.removeItem("token")
     navigate("/login")
   }
 
