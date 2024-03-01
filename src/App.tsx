@@ -15,9 +15,9 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       <Header />
-      <div className="flex flex-grow">
+      <div className={`flex flex-grow ${auth.user && "py-14"}`}>
         {auth.user && <Sidebar />}
-        <div className="flex-grow pt-14">
+        <div className="flex-grow">
           <Routes>
             <Route
               path="/login"

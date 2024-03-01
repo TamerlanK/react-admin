@@ -41,7 +41,6 @@ const Login: React.FC = () => {
           </h2>
         </div>
         {error && <ErrorMessage message={error} />}{" "}
-        {/* Display error message if present */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmitEvent}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
