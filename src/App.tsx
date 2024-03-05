@@ -8,14 +8,20 @@ import { useAuth } from "./context/AuthProvider"
 import Header from "./components/Header"
 import Sidebar from "./components/Sidebar"
 import Footer from "./components/Footer"
+import { useSidebar } from "./store/useSidebar"
 
 const App: React.FC = () => {
   const auth = useAuth()
+  const { collapsed } = useSidebar()
 
   return (
     <div className="flex flex-col h-screen">
       <Header />
-      <div className={`flex flex-grow ${auth.user && "py-14"}`}>
+      <div
+        className={`flex flex-grow transition-all duration-300 ${
+          auth.user && "p-14 pr-0"
+        } ${auth.user && (collapsed ? "pl-[88px]" : "pl-64")}`}
+      >
         {auth.user && <Sidebar />}
         <div className="flex-grow">
           <Routes>

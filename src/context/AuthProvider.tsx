@@ -1,74 +1,72 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react"
+import axios, { AxiosResponse } from "axios"
 import { useNavigate } from "react-router-dom"
+import { UserDataType } from "../lib/types"
 
-interface UserData {
-  id: number
-  username: string
-  email: string
-  firstName: string
-  lastName: string
-  gender: string
-  image: string
-  token: string
-}
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-interface AuthContextType {
-  token: string
-  user: UserData | null
+const api = axios.create({
+  baseURL: "https://dummyjson.com/auth",
+})
+
+export interface AuthContextType {
+  token: string | null
+  user: UserDataType | null
   loginAction: (data: { username: string; password: string }) => Promise<void>
   logOut: () => void
 }
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 interface AuthProviderProps {
   children: ReactNode
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<UserData | null>(null)
-  const [token, setToken] = useState<string>(() => {
+  const [user, setUser] = useState<UserDataType | null>(null)
+  const [token, setToken] = useState<string | null>(() => {
     const storedToken = localStorage.getItem("token")
-    return storedToken || ""
+    return storedToken || null
   })
   const navigate = useNavigate()
 
   useEffect(() => {
-    const storedUserData = localStorage.getItem("user")
-    if (storedUserData) {
-      setUser(JSON.parse(storedUserData))
+    const fetchUserData = async () => {
+      try {
+        const response: AxiosResponse<UserDataType> = await api.get("/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        setUser(response.data)
+      } catch (error) {
+        console.error("Error fetching user data:", error)
+        logOut()
+      }
     }
-  }, [])
+
+    if (token) {
+      fetchUserData()
+    }
+  }, [token])
 
   const loginAction = async (data: { username: string; password: string }) => {
     try {
-      const response = await fetch("https://dummyjson.com/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
+      const response: AxiosResponse<{ token: string }> = await api.post(
+        "/login",
+        data
+      )
 
-      if (response.ok) {
-        const userData: UserData = await response.json()
-        setUser(userData)
-        setToken(userData.token)
-        localStorage.setItem("user", JSON.stringify(userData))
-        localStorage.setItem("token", userData.token)
-        navigate("/dashboard")
-      } else {
-        throw new Error("Failed to log in")
-      }
+      setToken(response.data.token)
+      localStorage.setItem("token", response.data.token)
+      navigate("/dashboard")
     } catch (error: any) {
-      throw new Error(error.message)
+      console.error("Login error:", error.message)
+      throw new Error("Failed to log in")
     }
   }
 
   const logOut = () => {
     setUser(null)
-    setToken("")
-    localStorage.removeItem("user")
+    setToken(null)
     localStorage.removeItem("token")
     navigate("/login")
   }

@@ -3,57 +3,58 @@ import { Link } from "react-router-dom"
 import { FiUser, FiLogOut } from "react-icons/fi"
 import { useAuth } from "../context/AuthProvider"
 import { useSidebar } from "../store/useSidebar"
-import { cn } from "../lib/utils"
 import useClickOutside from "../hooks/useClickOutside"
+import { cn } from "../lib/utils"
 
 const Header: React.FC = () => {
   const auth = useAuth()
   const { collapsed } = useSidebar()
-  const [showDropdown, setShowDropdown] = useState<boolean>(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const toggleDropdown = () => setShowDropdown((prev) => !prev)
-  const closeDropdown = () => setShowDropdown(false)
-
-  useClickOutside(dropdownRef, closeDropdown)
-
-  const handleUserButtonClick = () => {
-    if (!showDropdown) toggleDropdown()
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev)
   }
 
   const handleLogout = () => {
     auth.logOut()
-    closeDropdown()
+    setIsDropdownOpen(false)
   }
 
+  const handleClickOutside = () => {
+    setIsDropdownOpen(false)
+  }
+
+  useClickOutside(dropdownRef, handleClickOutside)
+
   const userLinks = (
-    <>
+    <div className="relative">
       <button
-        onClick={handleUserButtonClick}
-        className="text-slate-800 focus:outline-none rounded-full p-3 bg-gray-100 hover:bg-gray-200 transition-colors"
+        className={cn(
+          "text-slate-800 focus:outline-none rounded-full p-3 bg-gray-100 hover:bg-gray-200 transition-colors",
+          isDropdownOpen && "opacity-80 hover:bg-gray-100"
+        )}
+        onClick={toggleDropdown}
       >
         <FiUser className="w-6 h-6" />
       </button>
-      {showDropdown && (
+      {isDropdownOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-14 right-8 bg-white shadow-lg rounded-md mt-1"
+          className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg"
         >
-          <div className="py-2">
-            <p className="px-4 py-2 text-gray-700">
-              {auth.user && auth.user.username}
-            </p>
+          <div className="py-1">
             <button
+              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               onClick={handleLogout}
-              className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
-              <FiLogOut className="inline-block w-4 h-4 mr-2" />
+              <FiLogOut className="mr-2 inline-block" />
               Logout
             </button>
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 
   const guestLinks = (
