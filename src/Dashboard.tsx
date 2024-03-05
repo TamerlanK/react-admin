@@ -2,6 +2,12 @@ import React, { useState } from "react"
 import { useAuth } from "./context/AuthProvider"
 import useProductFetch from "./hooks/useProductFetch"
 import { BiSortUp, BiSortDown, BiSort } from "react-icons/bi"
+import {
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight,
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight,
+} from "react-icons/md"
 
 import {
   createColumnHelper,
@@ -10,6 +16,7 @@ import {
   useReactTable,
   getSortedRowModel,
   SortingState,
+  getPaginationRowModel,
 } from "@tanstack/react-table"
 import { ProductType } from "./lib/types"
 
@@ -25,7 +32,13 @@ const columns = [
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("price", {
-    cell: (info) => info.getValue(),
+    cell: (info) => {
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(info.getValue())
+      return formatted
+    },
   }),
   columnHelper.accessor("brand", {
     cell: (info) => info.getValue(),
@@ -43,9 +56,15 @@ const Dashboard: React.FC = () => {
     state: {
       sorting,
     },
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   })
 
   return (
@@ -115,6 +134,86 @@ const Dashboard: React.FC = () => {
                   ))}
                 </tbody>
               </table>
+              <div className="flex sm:flex-row flex-col w-full mt-8 items-center gap-2 text-xs bg-gray-100 p-4 rounded shadow-md">
+                <div className="sm:mr-auto sm:mb-0 mb-2 flex items-center">
+                  <span className="mr-2 text-gray-700">Items per page</span>
+                  <select
+                    className="border p-1 rounded w-16 border-gray-300 bg-white shadow-sm hover:shadow-md focus:outline-none focus:border-blue-500"
+                    value={table.getState().pagination.pageSize}
+                    onChange={(e) => {
+                      table.setPageSize(Number(e.target.value))
+                    }}
+                  >
+                    {[2, 4, 6, 8].map((pageSize) => (
+                      <option key={pageSize} value={pageSize}>
+                        {pageSize}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    className={`${
+                      !table.getCanPreviousPage()
+                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                        : "hover:bg-gray-400 text-gray-800"
+                    } rounded p-1 focus:outline-none`}
+                    onClick={() => table.setPageIndex(0)}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <MdKeyboardDoubleArrowLeft size={18} />
+                  </button>
+                  <button
+                    className={`${
+                      !table.getCanPreviousPage()
+                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                        : "hover:bg-gray-400 text-gray-800"
+                    } rounded p-1 focus:outline-none`}
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <MdKeyboardArrowLeft size={18} />
+                  </button>
+                  <span className="flex items-center gap-1 text-gray-700">
+                    <input
+                      min={1}
+                      max={table.getPageCount()}
+                      type="number"
+                      value={table.getState().pagination.pageIndex + 1}
+                      onChange={(e) => {
+                        const page = e.target.value
+                          ? Number(e.target.value) - 1
+                          : 0
+                        table.setPageIndex(page)
+                      }}
+                      className="border p-1 rounded w-10 text-center bg-white border-gray-300"
+                    />
+                    of {table.getPageCount()}
+                  </span>
+                  <button
+                    className={`${
+                      !table.getCanNextPage()
+                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                        : "hover:bg-gray-400 text-gray-800"
+                    } rounded p-1 focus:outline-none`}
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    <MdKeyboardArrowRight size={18} />
+                  </button>
+                  <button
+                    className={`${
+                      !table.getCanNextPage()
+                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                        : "hover:bg-gray-400 text-gray-800"
+                    } rounded p-1 focus:outline-none`}
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    <MdKeyboardDoubleArrowRight size={18} />
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>
