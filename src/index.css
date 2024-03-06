@@ -10,4 +10,6 @@ body,
 
 body {
   @apply bg-gray-100;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

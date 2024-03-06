@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, ReactNode } from "react"
 import axios, { AxiosResponse } from "axios"
 import { useNavigate } from "react-router-dom"
 import { UserDataType } from "../lib/types"
+import useLocalStorage from "../hooks/useLocalStorage"
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
@@ -22,10 +23,7 @@ interface AuthProviderProps {
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<UserDataType | null>(null)
-  const [token, setToken] = useState<string | null>(() => {
-    const storedToken = localStorage.getItem("token")
-    return storedToken || null
-  })
+  const [token, setToken] = useLocalStorage<string | null>("token", null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -54,9 +52,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         "/login",
         data
       )
-
       setToken(response.data.token)
-      localStorage.setItem("token", response.data.token)
       navigate("/dashboard")
     } catch (error: any) {
       console.error("Login error:", error.message)

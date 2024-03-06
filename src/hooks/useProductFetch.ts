@@ -9,11 +9,14 @@ const useProductFetch = (token: string | null) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://dummyjson.com/products", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        const response = await axios.get(
+          "https://dummyjson.com/products?limit=100",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         if (response.status === 200) {
           setProducts(response.data.products)
         } else {
