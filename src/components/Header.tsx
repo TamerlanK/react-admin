@@ -77,11 +77,11 @@ const Header: React.FC = () => {
   return (
     <div
       className={cn(
-        "fixed top-0 inset-x-0 bg-white h-14 px-8 flex justify-between items-center transition-all duration-300",
+        "fixed top-0 inset-x-0 bg-white h-14 px-8 flex justify-between items-center transition-all duration-300 border-b border-b-gray-300",
         auth.user && (collapsed ? "pl-[88px]" : "pl-64")
       )}
     >
-      <h1 className="text-xl font-semibold text-gray-700">React Admin</h1>
+      <h1 className="text-xl font-semibold text-gray-700 mt-1">React Admin</h1>
       <div className="flex gap-x-4 items-center">
         {auth.user ? userLinks : guestLinks}
       </div>

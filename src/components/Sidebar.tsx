@@ -1,11 +1,23 @@
-import React from "react"
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi"
+import React, { useEffect, useState } from "react"
 import { useSidebar } from "../store/useSidebar"
+import { cn } from "../lib/utils"
 
 import Logo from "/logo.png"
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi"
+import { sidebarRoutes } from "../lib/data"
+import SidebarItem from "./SidebarItem"
+import { Link } from "react-router-dom"
 
 const Sidebar: React.FC = () => {
   const { collapsed, onExpand, onCollapse } = useSidebar()
+
+  const [isClicked, setIsClicked] = useState(false)
+
+  useEffect(() => {
+    if (!collapsed) {
+      setIsClicked(true)
+    }
+  }, [])
 
   const toggleSidebar = () => {
     if (collapsed) {
@@ -15,36 +27,40 @@ const Sidebar: React.FC = () => {
     }
   }
 
+  const handleClick = () => {
+    toggleSidebar()
+    setIsClicked((prev) => !prev)
+  }
+
   return (
     <div
-      className={`bg-slate-800 h-full fixed left-0 top-0 ${
+      className={cn(
+        "bg-slate-800 h-full fixed left-0 flex flex-col justify-between transition-all duration-300 z-10 inset-y-0",
         collapsed ? "w-14" : "w-56"
-      } transition-all duration-300 z-10`}
-      onMouseEnter={onExpand}
-      onMouseLeave={onCollapse}
+      )}
     >
-      {/* Company Logo */}
-      <div className="py-4 px-2 flex items-center justify-center">
-        <img src={Logo} alt="Company Logo" className="h-8 w-8" />
+      <Link to={"/dashboard"}>
+        <div className="h-14 flex justify-center items-center">
+          <img src={Logo} alt="Logo" className="w-14" />
+        </div>
+      </Link>
+      <div
+        className="flex-grow bg-slate-700"
+        onMouseEnter={!isClicked ? toggleSidebar : undefined}
+        onMouseLeave={!isClicked ? toggleSidebar : undefined}
+      >
+        {sidebarRoutes.map((route) => (
+          <SidebarItem key={route.to} {...route} />
+        ))}
       </div>
 
-      {/* Sidebar Body */}
-      <div className="flex flex-col h-full">
-        {/* Sections */}
-        {/* Add your sidebar sections here */}
-
-        {/* Collapse/Expand Button */}
-        <button
-          className="flex items-center justify-center mt-auto py-3 text-white focus:outline-none"
-          onClick={toggleSidebar}
-        >
-          {collapsed ? (
-            <FiChevronRight className="w-6 h-6" />
-          ) : (
-            <FiChevronLeft className="w-6 h-6" />
-          )}
-        </button>
-      </div>
+      <button
+        className="text-white cursor-pointer w-full flex justify-center items-center h-14 focus:outline-none"
+        onClick={handleClick}
+        aria-label={`${collapsed ? "Expand" : "Collapse"} Sidebar`}
+      >
+        {collapsed ? <FiChevronRight /> : <FiChevronLeft />}
+      </button>
     </div>
   )
 }

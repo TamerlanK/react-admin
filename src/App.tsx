@@ -15,7 +15,7 @@ const App: React.FC = () => {
   const { collapsed } = useSidebar()
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen antialiased">
       <Header />
       <div
         className={`flex flex-grow transition-all duration-300 ${
