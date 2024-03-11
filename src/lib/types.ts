@@ -1,18 +1,30 @@
 export interface ProductType {
   id: number
   title: string
-  description: string
   price: number
-  discountPercentage: number
-  rating: number
-  stock: number
   brand: string
-  category: string
-  thumbnail: string
-  images: string[]
+}
+export interface TodoType {
+  id: number
+  todo: string
+  completed: boolean
 }
 
-export interface UserDataType {
+export interface QuoteType {
+  id: number
+  quote: string
+  author: string
+}
+
+export interface UserType {
+  id: number
+  firstName: string
+  lastName: string
+  age: number
+  email: string
+}
+
+export interface AuthUserDataType {
   id: number
   username: string
   email: string

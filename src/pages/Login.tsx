@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, ChangeEvent } from "react"
-import { useAuth } from "./context/AuthProvider"
-import ErrorMessage from "./components/ErrorMessage"
+import { useAuth } from "../context/AuthProvider"
+import ErrorMessage from "../components/ErrorMessage"
 
 const Login: React.FC = () => {
   const [input, setInput] = useState<{ username: string; password: string }>({

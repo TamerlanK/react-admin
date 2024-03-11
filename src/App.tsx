@@ -1,14 +1,21 @@
 import React from "react"
 import { Route, Routes, Navigate } from "react-router-dom"
-import Login from "./Login"
-import Register from "./Register"
+
 import PrivateRoute from "./PrivateRoute"
-import Dashboard from "./Dashboard"
 import { useAuth } from "./context/AuthProvider"
 import Header from "./components/Header"
 import Sidebar from "./components/Sidebar"
 import Footer from "./components/Footer"
 import { useSidebar } from "./store/useSidebar"
+import {
+  Login,
+  Register,
+  Dashboard,
+  Products,
+  Users,
+  Todos,
+  Quotes,
+} from "./pages"
 
 const App: React.FC = () => {
   const auth = useAuth()
@@ -35,6 +42,10 @@ const App: React.FC = () => {
             />
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/todos" element={<Todos />} />
+              <Route path="/quotes" element={<Quotes />} />
             </Route>
             <Route path="/" element={<Navigate to="/login" />} />
           </Routes>

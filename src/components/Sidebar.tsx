@@ -7,6 +7,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi"
 import { sidebarRoutes } from "../lib/data"
 import SidebarItem from "./SidebarItem"
 import { Link } from "react-router-dom"
+import Tooltip from "./Tooltip"
 
 const Sidebar: React.FC = () => {
   const { collapsed, onExpand, onCollapse } = useSidebar()
@@ -54,13 +55,15 @@ const Sidebar: React.FC = () => {
         ))}
       </div>
 
-      <button
-        className="text-white cursor-pointer w-full flex justify-center items-center h-14 focus:outline-none"
-        onClick={handleClick}
-        aria-label={`${collapsed ? "Expand" : "Collapse"} Sidebar`}
-      >
-        {collapsed ? <FiChevronRight /> : <FiChevronLeft />}
-      </button>
+      <Tooltip text={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}>
+        <button
+          className="text-white cursor-pointer w-full flex justify-center items-center h-14 focus:outline-none"
+          onClick={handleClick}
+          aria-label={`${collapsed ? "Expand" : "Collapse"} Sidebar`}
+        >
+          {collapsed ? <FiChevronRight /> : <FiChevronLeft />}
+        </button>
+      </Tooltip>
     </div>
   )
 }

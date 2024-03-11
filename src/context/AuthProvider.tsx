@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react"
 import axios, { AxiosResponse } from "axios"
 import { useNavigate } from "react-router-dom"
-import { UserDataType } from "../lib/types"
+import { AuthUserDataType } from "../lib/types"
 import useLocalStorage from "../hooks/useLocalStorage"
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -12,7 +12,7 @@ const api = axios.create({
 
 export interface AuthContextType {
   token: string | null
-  user: UserDataType | null
+  user: AuthUserDataType | null
   loginAction: (data: { username: string; password: string }) => Promise<void>
   logOut: () => void
 }
@@ -22,14 +22,14 @@ interface AuthProviderProps {
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<UserDataType | null>(null)
+  const [user, setUser] = useState<AuthUserDataType | null>(null)
   const [token, setToken] = useLocalStorage<string | null>("token", null)
   const navigate = useNavigate()
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response: AxiosResponse<UserDataType> = await api.get("/me", {
+        const response: AxiosResponse<AuthUserDataType> = await api.get("/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
