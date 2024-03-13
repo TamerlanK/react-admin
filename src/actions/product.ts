@@ -28,3 +28,17 @@ export const updateProduct = async (
     console.error("Error updating product:", error)
   }
 }
+
+export const addProduct = async (data: Omit<ProductType, "id">) => {
+  try {
+    const response = await axiosInstance.post(
+      "https://dummyjson.com/products",
+      data,
+      { headers: { "Content-Type": "application/json" } }
+    )
+    console.log(`New product added`)
+    console.log(response.data)
+  } catch (error) {
+    console.error("Error adding product:", error)
+  }
+}

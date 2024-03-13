@@ -18,9 +18,10 @@ import TableHeader from "../components/table/TableHeader"
 import Wrapper from "../components/table/Wrapper"
 import useFetch from "../hooks/useFetch"
 
-import { FaEdit, FaTrash } from "react-icons/fa"
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
 import { deleteProduct, updateProduct } from "../actions/product"
 import { ProductType } from "../lib/types"
+import CreateProductModal from "../components/modals/CreateProductModal"
 
 const columnHelper = createColumnHelper<ProductType>()
 
@@ -36,7 +37,7 @@ const columns = [
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(info.getValue())
+      }).format(info.getValue()!)
       return formatted
     },
   }),
@@ -107,13 +108,23 @@ const Products: React.FC = () => {
     getPaginationRowModel: getPaginationRowModel(),
   })
 
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+
   if (loading) {
     return <Loader />
   }
 
   return (
     <Wrapper>
-      <HeadText>Products</HeadText>
+      <div className="w-full flex items-center justify-between">
+        <HeadText>Products</HeadText>
+        <button
+          className="p-2 rounded-md bg-blue-600"
+          onClick={() => setIsCreateModalOpen(true)}
+        >
+          <FaPlus className="text-white size-3" />
+        </button>
+      </div>
 
       <table className="w-full table-auto">
         <TableHeader headerGroups={table.getHeaderGroups()} />
@@ -132,6 +143,10 @@ const Products: React.FC = () => {
         </div>
         <PaginationButtons table={table} />
       </div>
+      <CreateProductModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
     </Wrapper>
   )
 }
