@@ -38,6 +38,15 @@ const columns = [
   columnHelper.accessor("email", {
     cell: (info) => info.getValue(),
   }),
+  columnHelper.accessor("id", {
+    id: "action",
+    header: () => <span className="mx-auto">action</span>,
+    cell: ({row}) => {
+      const {id} = row.original
+
+      
+    }
+  })
 ]
 
 const Products: React.FC = () => {

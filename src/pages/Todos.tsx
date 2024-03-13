@@ -1,24 +1,24 @@
 import React, { useState } from "react"
+
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"
 import {
-  SortingState,
   createColumnHelper,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table"
-import useFetch from "../hooks/useFetch"
-
-import HeadText from "../components/HeadText"
-import Loader from "../components/Loader"
-import ItemsPerPageSelect from "../components/table/ItemsPerPageSelect"
-import PaginationButtons from "../components/table/PaginationButtons"
-import TableBody from "../components/table/TableBody"
-import TableHeader from "../components/table/TableHeader"
-import Wrapper from "../components/table/Wrapper"
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"
 
 import { TodoType } from "../lib/types"
+import useFetch from "../hooks/useFetch"
+import Loader from "../components/Loader"
+import HeadText from "../components/HeadText"
+import Wrapper from "../components/table/Wrapper"
+import TableBody from "../components/table/TableBody"
+import TableHeader from "../components/table/TableHeader"
+import PaginationButtons from "../components/table/PaginationButtons"
+import ItemsPerPageSelect from "../components/table/ItemsPerPageSelect"
 
 const columnHelper = createColumnHelper<TodoType>()
 

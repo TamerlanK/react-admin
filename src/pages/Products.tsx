@@ -1,14 +1,13 @@
-import React, { useState } from "react"
+import React, { useState, useTransition } from "react"
+
 import {
-  SortingState,
   createColumnHelper,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table"
-
-import useFetch from "../hooks/useFetch"
 
 import HeadText from "../components/HeadText"
 import Loader from "../components/Loader"
@@ -17,7 +16,10 @@ import PaginationButtons from "../components/table/PaginationButtons"
 import TableBody from "../components/table/TableBody"
 import TableHeader from "../components/table/TableHeader"
 import Wrapper from "../components/table/Wrapper"
+import useFetch from "../hooks/useFetch"
 
+import { FaEdit, FaTrash } from "react-icons/fa"
+import { deleteProduct, updateProduct } from "../actions/product"
 import { ProductType } from "../lib/types"
 
 const columnHelper = createColumnHelper<ProductType>()
@@ -40,6 +42,47 @@ const columns = [
   }),
   columnHelper.accessor("brand", {
     cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("id", {
+    id: "action",
+    header: () => <span className="mx-auto">action</span>,
+    cell: ({ row }) => {
+      const { id } = row.original
+
+      const [isPending, startTransition] = useTransition()
+
+      const handleEdit = async () => {
+        startTransition(() => {
+          updateProduct(id, { title: "Item updated" })
+        })
+      }
+
+      const handleDelete = async () => {
+        startTransition(() => {
+          deleteProduct(id)
+        })
+      }
+
+      return (
+        <div className="flex justify-center gap-x-4 items-center">
+          <button onClick={handleEdit} disabled={isPending}>
+            <FaEdit
+              className={`text-blue-600 size-4 ${
+                isPending ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            />
+          </button>
+          <button onClick={handleDelete} disabled={isPending}>
+            <FaTrash
+              className={`text-red-600 size-4 ${
+                isPending ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            />
+          </button>
+        </div>
+      )
+    },
+    enableSorting: false,
   }),
 ]
 
