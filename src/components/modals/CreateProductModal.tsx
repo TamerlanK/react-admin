@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from "react"
+import React, { useReducer } from "react"
 import Modal from "../Modal"
 import Input from "../Input"
 import { addProduct } from "../../actions/product"
@@ -8,68 +8,89 @@ interface CreateProductModalProps {
   onClose: () => void
 }
 
-interface FormState {
-  title: string
-  brand: string
-  price: number
+interface State {
+  product: {
+    title: string
+    brand: string
+    price: number
+  }
+  isLoading: boolean
 }
 
-type ActionType = "SET_TITLE" | "SET_BRAND" | "SET_PRICE" | "RESET"
+type Action =
+  | { type: "SET_FIELD"; field: string; value: string | number }
+  | { type: "RESET_FIELDS" }
+  | { type: "SET_LOADING"; isLoading: boolean }
 
-interface Action {
-  type: ActionType
-  payload?: string | number
-}
-
-const formReducer = (state: FormState, action: Action): FormState => {
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case "SET_TITLE":
-      return { ...state, title: (action.payload as string) || "" }
-    case "SET_BRAND":
-      return { ...state, brand: (action.payload as string) || "" }
-    case "SET_PRICE":
-      return { ...state, price: +action.payload! }
-    case "RESET":
-      return INITIAL_STATE
+    case "SET_FIELD":
+      return {
+        ...state,
+        product: {
+          ...state.product,
+          [action.field]: action.value,
+        },
+      }
+    case "RESET_FIELDS":
+      return {
+        product: {
+          title: "",
+          brand: "",
+          price: 0,
+        },
+        isLoading: false,
+      }
+    case "SET_LOADING":
+      return {
+        ...state,
+        isLoading: action.isLoading,
+      }
     default:
       return state
   }
 }
 
-const INITIAL_STATE: FormState = {
-  title: "",
-  brand: "",
-  price: 0,
+const INITIAL_STATE: State = {
+  product: {
+    title: "",
+    brand: "",
+    price: 0,
+  },
+  isLoading: false,
 }
 
 const CreateProductModal: React.FC<CreateProductModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [state, dispatch] = useReducer(formReducer, INITIAL_STATE)
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
 
-  useEffect(() => {
-    if (!isOpen) {
-      dispatch({ type: "RESET" })
-    }
-  }, [isOpen])
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
+    dispatch({ type: "SET_FIELD", field, value: e.target.value })
+  }
 
   const handleCreateProduct = async () => {
-    const { title, brand, price } = state
+    const { title, brand, price } = state.product
     try {
+      dispatch({ type: "SET_LOADING", isLoading: true })
       await addProduct({ title, brand, price })
       console.log("New product added")
       onClose()
     } catch (error) {
       console.error("Error adding product:", error)
+    } finally {
+      dispatch({ type: "SET_LOADING", isLoading: false })
+      dispatch({ type: "RESET_FIELDS" })
     }
   }
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    type: ActionType
-  ) => {
-    dispatch({ type, payload: e.target.value })
+  const handleCancel = () => {
+    dispatch({ type: "RESET_FIELDS" })
+    onClose()
   }
 
   return (
@@ -80,33 +101,34 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
           id="title"
           label="Title"
           type="text"
-          value={state.title}
-          onChange={(e) => handleChange(e, "SET_TITLE")}
+          value={state.product.title}
+          onChange={(e) => handleChange(e, "title")}
         />
         <Input
           id="brand"
           label="Brand"
           type="text"
-          value={state.brand}
-          onChange={(e) => handleChange(e, "SET_BRAND")}
+          value={state.product.brand}
+          onChange={(e) => handleChange(e, "brand")}
         />
         <Input
           id="price"
           label="Price"
           type="number"
-          value={state.price.toString()}
-          onChange={(e) => handleChange(e, "SET_PRICE")}
+          value={state.product.price.toString()}
+          onChange={(e) => handleChange(e, "price")}
         />
       </div>
       <div className="flex justify-end mt-4 space-x-4">
         <button
           onClick={handleCreateProduct}
-          className="bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition duration-300"
+          disabled={state.isLoading}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Create
+          {state.isLoading ? "Creating..." : "Create"}
         </button>
         <button
-          onClick={onClose}
+          onClick={handleCancel}
           className="bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600 transition duration-300"
         >
           Cancel

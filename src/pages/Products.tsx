@@ -22,6 +22,7 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
 import { deleteProduct, updateProduct } from "../actions/product"
 import { ProductType } from "../lib/types"
 import CreateProductModal from "../components/modals/CreateProductModal"
+import EditProductModal from "../components/modals/EditProductModal"
 
 const columnHelper = createColumnHelper<ProductType>()
 
@@ -48,14 +49,14 @@ const columns = [
     id: "action",
     header: () => <span className="mx-auto">action</span>,
     cell: ({ row }) => {
-      const { id } = row.original
+      const { id, brand, title, price } = row.original
 
       const [isPending, startTransition] = useTransition()
 
+      const [isEditModalOpen, setIsEditModelOpen] = useState(false)
+
       const handleEdit = async () => {
-        startTransition(() => {
-          updateProduct(id, { title: "Item updated" })
-        })
+        setIsEditModelOpen(true)
       }
 
       const handleDelete = async () => {
@@ -80,6 +81,11 @@ const columns = [
               }`}
             />
           </button>
+          <EditProductModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModelOpen(false)}
+            initialData={{ id, title, price, brand }}
+          />
         </div>
       )
     },
