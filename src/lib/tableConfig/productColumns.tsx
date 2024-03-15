@@ -6,6 +6,19 @@ import { notify } from "../utils"
 import { FaEdit, FaTrash } from "react-icons/fa"
 import EditProductModal from "../../components/modals/EditProductModal"
 
+import PhotoAlbum, { Photo } from "react-photo-album"
+import Lightbox, { SlideImage } from "yet-another-react-lightbox"
+import {
+  Fullscreen,
+  Slideshow,
+  Thumbnails,
+  Zoom,
+} from "yet-another-react-lightbox/plugins"
+
+import "yet-another-react-lightbox/styles.css"
+import "yet-another-react-lightbox/plugins/thumbnails.css"
+import Swal from "sweetalert2"
+
 const columnHelper = createColumnHelper<ProductType>()
 
 export const productColumns = [
@@ -13,9 +26,37 @@ export const productColumns = [
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("thumbnail", {
-    cell: (info) => (
-      <img className="w-12 mx-auto object-cover" src={info.getValue()} />
-    ),
+    cell: (info) => {
+      const photos: SlideImage[] = info.row.original.images.map((image) => ({
+        src: image,
+      }))
+
+      const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+      const [index, setIndex] = useState(-1)
+
+      return (
+        <>
+          <img
+            onClick={() => setIsLightboxOpen(true)}
+            className="w-12 mx-auto object-cover"
+            src={info.getValue()}
+          />
+
+          <Lightbox
+            open={isLightboxOpen}
+            close={() => setIsLightboxOpen(false)}
+            slides={photos}
+            plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+          />
+          <PhotoAlbum
+            photos={photos as Photo[]}
+            layout="rows"
+            targetRowHeight={150}
+            onClick={({ index }) => setIndex(index)}
+          />
+        </>
+      )
+    },
   }),
   columnHelper.accessor("title", {
     cell: (info) => info.getValue(),
@@ -46,14 +87,25 @@ export const productColumns = [
       }
 
       const handleDelete = async (id: number) => {
-        setIsLoading(true)
-        try {
-          await deleteProduct(id)
-          setIsLoading(false)
-          notify(`${row.original.title} has been deleted.`, "success")
-        } catch (error: any) {
-          setIsLoading(false)
-          notify("An error occurred while deleting the product", "error")
+        const result = await Swal.fire({
+          title: "Are you sure?",
+          showCancelButton: true,
+          confirmButtonText: "Yes, delete it!",
+          cancelButtonText: "No, cancel!",
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+        })
+
+        if (result.isConfirmed) {
+          setIsLoading(true)
+          try {
+            await deleteProduct(id)
+            setIsLoading(false)
+            notify(`${row.original.title} has been deleted.`, "success")
+          } catch (error: any) {
+            setIsLoading(false)
+            notify("An error occurred while deleting the product", "error")
+          }
         }
       }
 
