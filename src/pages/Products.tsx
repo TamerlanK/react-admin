@@ -23,6 +23,7 @@ import { deleteProduct, updateProduct } from "../actions/product"
 import { ProductType } from "../lib/types"
 import CreateProductModal from "../components/modals/CreateProductModal"
 import EditProductModal from "../components/modals/EditProductModal"
+import Swal from "sweetalert2"
 
 const columnHelper = createColumnHelper<ProductType>()
 
@@ -49,42 +50,55 @@ const columns = [
     id: "action",
     header: () => <span className="mx-auto">action</span>,
     cell: ({ row }) => {
-      const { id, brand, title, price } = row.original
-
-      const [isPending, startTransition] = useTransition()
+      const { id } = row.original
 
       const [isEditModalOpen, setIsEditModelOpen] = useState(false)
+      const [isLoading, setIsLoading] = useState(false)
 
       const handleEdit = async () => {
         setIsEditModelOpen(true)
       }
 
-      const handleDelete = async () => {
-        startTransition(() => {
-          deleteProduct(id)
-        })
+      const handleDelete = async (id: number) => {
+        setIsLoading(true)
+        try {
+          await deleteProduct(id)
+          setIsLoading(false)
+          Swal.fire(
+            "Deleted!",
+            `${row.original.title} has been deleted.`,
+            "success"
+          )
+        } catch (error: any) {
+          setIsLoading(false)
+          Swal.fire(
+            "Error!",
+            "An error occurred while deleting the product: " + error.message,
+            "error"
+          )
+        }
       }
 
       return (
         <div className="flex justify-center gap-x-4 items-center">
-          <button onClick={handleEdit} disabled={isPending}>
+          <button onClick={handleEdit}>
             <FaEdit
               className={`text-blue-600 size-4 ${
-                isPending ? "opacity-50 cursor-not-allowed" : ""
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             />
           </button>
-          <button onClick={handleDelete} disabled={isPending}>
+          <button onClick={() => handleDelete(id)}>
             <FaTrash
               className={`text-red-600 size-4 ${
-                isPending ? "opacity-50 cursor-not-allowed" : ""
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             />
           </button>
           <EditProductModal
             isOpen={isEditModalOpen}
             onClose={() => setIsEditModelOpen(false)}
-            initialData={{ id, title, price, brand }}
+            initialData={row.original}
           />
         </div>
       )

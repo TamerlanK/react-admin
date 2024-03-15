@@ -8,8 +8,10 @@ export const deleteProduct = async (id: number) => {
     )
     console.log(`Product with ID ${id} deleted successfully`)
     console.log(response.data)
-  } catch (error) {
+    return response.data
+  } catch (error: any) {
     console.error("Error deleting product:", error)
+    throw new Error("Error deleting product: " + error.message)
   }
 }
 
@@ -25,14 +27,14 @@ export const updateProduct = async (
     console.log(`Product with ID ${id} updated successfully`)
     console.log(response.data)
   } catch (error) {
-    console.error("Error updating product:", error)
+    throw error
   }
 }
 
 export const addProduct = async (data: Omit<ProductType, "id">) => {
   try {
     const response = await axiosInstance.post(
-      "https://dummyjson.com/products",
+      "https://dummyjson.com/products/add",
       data,
       { headers: { "Content-Type": "application/json" } }
     )
@@ -40,5 +42,6 @@ export const addProduct = async (data: Omit<ProductType, "id">) => {
     console.log(response.data)
   } catch (error) {
     console.error("Error adding product:", error)
+    throw error
   }
 }

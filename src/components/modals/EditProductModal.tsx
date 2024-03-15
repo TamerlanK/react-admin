@@ -3,6 +3,7 @@ import { updateProduct } from "../../actions/product"
 import { ProductType } from "../../lib/types"
 import Input from "../Input"
 import Modal from "../Modal"
+import Swal from "sweetalert2"
 
 interface EditProductModalProps {
   isOpen: boolean
@@ -65,12 +66,20 @@ const EditProductModal = ({
       dispatch({ type: "SET_LOADING", isLoading: true })
       const { id, ...productWithoutId } = state.product
       await updateProduct(state.product.id, productWithoutId)
-      onClose()
+      Swal.fire({
+        icon: "success",
+        title: `Product ${id} Updated`,
+      })
     } catch (error) {
-      console.error("Error saving changes:", error)
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to save changes. Try again later.",
+      })
     } finally {
       dispatch({ type: "SET_LOADING", isLoading: false })
       dispatch({ type: "RESET_FIELDS", initialData })
+      onClose()
     }
   }
 

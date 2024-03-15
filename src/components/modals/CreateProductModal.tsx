@@ -2,6 +2,7 @@ import React, { useReducer } from "react"
 import Modal from "../Modal"
 import Input from "../Input"
 import { addProduct } from "../../actions/product"
+import Swal from "sweetalert2"
 
 interface CreateProductModalProps {
   isOpen: boolean
@@ -78,10 +79,18 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
     try {
       dispatch({ type: "SET_LOADING", isLoading: true })
       await addProduct({ title, brand, price })
-      console.log("New product added")
+      Swal.fire({
+        icon: "success",
+        title: "Product Created",
+        text: "New product has been created successfully.",
+      })
       onClose()
     } catch (error) {
-      console.error("Error adding product:", error)
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to create product. Please try again later.",
+      })
     } finally {
       dispatch({ type: "SET_LOADING", isLoading: false })
       dispatch({ type: "RESET_FIELDS" })
