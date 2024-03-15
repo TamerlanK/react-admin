@@ -1,37 +1,23 @@
-import React, { useState } from "react"
 import {
   SortingState,
-  createColumnHelper,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import React, { useState } from "react"
 
 import HeadText from "../components/HeadText"
 import Loader from "../components/Loader"
-import ItemsPerPageSelect from "../components/table/ItemsPerPageSelect"
-import PaginationButtons from "../components/table/PaginationButtons"
-import TableBody from "../components/table/TableBody"
-import TableHeader from "../components/table/TableHeader"
-import Wrapper from "../components/table/Wrapper"
+import {
+  ItemsPerPageSelect,
+  PaginationButtons,
+  TableBody,
+  TableHeader,
+  Wrapper,
+} from "../components/table"
 import useFetch from "../hooks/useFetch"
-
-import { QuoteType } from "../lib/types"
-
-const columnHelper = createColumnHelper<QuoteType>()
-
-const columns = [
-  columnHelper.accessor("id", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("quote", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("author", {
-    cell: (info) => info.getValue(),
-  }),
-]
+import { quoteColumns } from "../lib/tableConfig/quoteColumns"
 
 const Quotes: React.FC = () => {
   const { data, loading } = useFetch("https://dummyjson.com/quotes")
@@ -39,7 +25,7 @@ const Quotes: React.FC = () => {
 
   const table = useReactTable({
     data: data?.quotes,
-    columns,
+    columns: quoteColumns,
     state: {
       sorting,
     },

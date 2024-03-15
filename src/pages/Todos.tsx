@@ -1,43 +1,24 @@
 import React, { useState } from "react"
 
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"
 import {
-  createColumnHelper,
+  SortingState,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table"
 
-import { TodoType } from "../lib/types"
-import useFetch from "../hooks/useFetch"
-import Loader from "../components/Loader"
 import HeadText from "../components/HeadText"
-import Wrapper from "../components/table/Wrapper"
-import TableBody from "../components/table/TableBody"
-import TableHeader from "../components/table/TableHeader"
-import PaginationButtons from "../components/table/PaginationButtons"
-import ItemsPerPageSelect from "../components/table/ItemsPerPageSelect"
-
-const columnHelper = createColumnHelper<TodoType>()
-
-const columns = [
-  columnHelper.accessor("id", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("todo", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("completed", {
-    cell: (info) =>
-      info.getValue() ? (
-        <FaCheckCircle className="text-emerald-600" />
-      ) : (
-        <FaTimesCircle className="text-red-600" />
-      ),
-  }),
-]
+import Loader from "../components/Loader"
+import {
+  ItemsPerPageSelect,
+  PaginationButtons,
+  TableBody,
+  TableHeader,
+  Wrapper,
+} from "../components/table"
+import useFetch from "../hooks/useFetch"
+import { todoColumns } from "../lib/tableConfig/todoColumns"
 
 const Todos: React.FC = () => {
   const { data, loading } = useFetch("https://dummyjson.com/todos")
@@ -45,7 +26,7 @@ const Todos: React.FC = () => {
 
   const table = useReactTable({
     data: data?.todos,
-    columns,
+    columns: todoColumns,
     state: {
       sorting,
     },

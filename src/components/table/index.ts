@@ -1,0 +1,5 @@
+export { default as Wrapper } from "./Wrapper"
+export { default as TableHeader } from "./TableHeader"
+export { default as TableBody } from "./TableBody"
+export { default as ItemsPerPageSelect } from "./ItemsPerPageSelect"
+export { default as PaginationButtons } from "./PaginationButtons"

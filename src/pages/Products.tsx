@@ -1,7 +1,6 @@
-import React, { useState, useTransition } from "react"
+import React, { useState } from "react"
 
 import {
-  createColumnHelper,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
@@ -9,96 +8,20 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
-import HeadText from "../components/HeadText"
-import Loader from "../components/Loader"
-import ItemsPerPageSelect from "../components/table/ItemsPerPageSelect"
-import PaginationButtons from "../components/table/PaginationButtons"
-import TableBody from "../components/table/TableBody"
-import TableHeader from "../components/table/TableHeader"
-import Wrapper from "../components/table/Wrapper"
 import useFetch from "../hooks/useFetch"
 
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
-import { deleteProduct, updateProduct } from "../actions/product"
-import { ProductType } from "../lib/types"
+import HeadText from "../components/HeadText"
+import Loader from "../components/Loader"
+import { productColumns } from "../lib/tableConfig/productColumns"
+import {
+  ItemsPerPageSelect,
+  PaginationButtons,
+  TableBody,
+  TableHeader,
+  Wrapper,
+} from "../components/table"
 import CreateProductModal from "../components/modals/CreateProductModal"
-import EditProductModal from "../components/modals/EditProductModal"
-import Swal from "sweetalert2"
-import { notify } from "../lib/utils"
-
-const columnHelper = createColumnHelper<ProductType>()
-
-const columns = [
-  columnHelper.accessor("id", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("title", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("price", {
-    cell: (info) => {
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(info.getValue()!)
-      return formatted
-    },
-  }),
-  columnHelper.accessor("brand", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("id", {
-    id: "action",
-    header: () => <span className="mx-auto">action</span>,
-    cell: ({ row }) => {
-      const { id } = row.original
-
-      const [isEditModalOpen, setIsEditModelOpen] = useState(false)
-      const [isLoading, setIsLoading] = useState(false)
-
-      const handleEdit = async () => {
-        setIsEditModelOpen(true)
-      }
-
-      const handleDelete = async (id: number) => {
-        setIsLoading(true)
-        try {
-          await deleteProduct(id)
-          setIsLoading(false)
-          notify(`${row.original.title} has been deleted.`, "success")
-        } catch (error: any) {
-          setIsLoading(false)
-          notify("An error occurred while deleting the product", "error")
-        }
-      }
-
-      return (
-        <div className="flex justify-center gap-x-4 items-center">
-          <button onClick={handleEdit}>
-            <FaEdit
-              className={`text-blue-600 size-4 ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            />
-          </button>
-          <button onClick={() => handleDelete(id)}>
-            <FaTrash
-              className={`text-red-600 size-4 ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            />
-          </button>
-          <EditProductModal
-            isOpen={isEditModalOpen}
-            onClose={() => setIsEditModelOpen(false)}
-            initialData={row.original}
-          />
-        </div>
-      )
-    },
-    enableSorting: false,
-  }),
-]
+import { FaPlus } from "react-icons/fa"
 
 const Products: React.FC = () => {
   const { data, loading } = useFetch("https://dummyjson.com/products?limit=100")
@@ -106,7 +29,7 @@ const Products: React.FC = () => {
 
   const table = useReactTable({
     data: data?.products,
-    columns,
+    columns: productColumns,
     state: {
       sorting,
     },

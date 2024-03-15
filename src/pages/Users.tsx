@@ -1,53 +1,25 @@
-import React, { useState } from "react"
 import {
   SortingState,
-  createColumnHelper,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table"
+import React, { useState } from "react"
 
 import useFetch from "../hooks/useFetch"
 
 import HeadText from "../components/HeadText"
 import Loader from "../components/Loader"
-import ItemsPerPageSelect from "../components/table/ItemsPerPageSelect"
-import PaginationButtons from "../components/table/PaginationButtons"
-import TableBody from "../components/table/TableBody"
-import TableHeader from "../components/table/TableHeader"
-import Wrapper from "../components/table/Wrapper"
+import {
+  ItemsPerPageSelect,
+  PaginationButtons,
+  TableBody,
+  TableHeader,
+  Wrapper,
+} from "../components/table"
 
-import { UserType } from "../lib/types"
-
-const columnHelper = createColumnHelper<UserType>()
-
-const columns = [
-  columnHelper.accessor("id", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("firstName", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("lastName", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("age", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("email", {
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("id", {
-    id: "action",
-    header: () => <span className="mx-auto">action</span>,
-    cell: ({row}) => {
-      const {id} = row.original
-
-      
-    }
-  })
-]
+import { userColumns } from "../lib/tableConfig/userColumns"
 
 const Products: React.FC = () => {
   const { data, loading } = useFetch("https://dummyjson.com/users")
@@ -55,7 +27,7 @@ const Products: React.FC = () => {
 
   const table = useReactTable({
     data: data?.users,
-    columns,
+    columns: userColumns,
     state: {
       sorting,
     },

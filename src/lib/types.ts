@@ -3,7 +3,10 @@ export interface ProductType {
   title: string
   price: number
   brand: string
+  thumbnail: string
+  images: string[]
 }
+
 export interface TodoType {
   id: number
   todo: string
