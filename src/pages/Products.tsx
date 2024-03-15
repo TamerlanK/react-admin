@@ -24,6 +24,7 @@ import { ProductType } from "../lib/types"
 import CreateProductModal from "../components/modals/CreateProductModal"
 import EditProductModal from "../components/modals/EditProductModal"
 import Swal from "sweetalert2"
+import { notify } from "../lib/utils"
 
 const columnHelper = createColumnHelper<ProductType>()
 
@@ -64,18 +65,10 @@ const columns = [
         try {
           await deleteProduct(id)
           setIsLoading(false)
-          Swal.fire(
-            "Deleted!",
-            `${row.original.title} has been deleted.`,
-            "success"
-          )
+          notify(`${row.original.title} has been deleted.`, "success")
         } catch (error: any) {
           setIsLoading(false)
-          Swal.fire(
-            "Error!",
-            "An error occurred while deleting the product: " + error.message,
-            "error"
-          )
+          notify("An error occurred while deleting the product", "error")
         }
       }
 

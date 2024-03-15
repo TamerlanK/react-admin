@@ -3,6 +3,7 @@ import Modal from "../Modal"
 import Input from "../Input"
 import { addProduct } from "../../actions/product"
 import Swal from "sweetalert2"
+import { notify } from "../../lib/utils"
 
 interface CreateProductModalProps {
   isOpen: boolean
@@ -79,18 +80,10 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
     try {
       dispatch({ type: "SET_LOADING", isLoading: true })
       await addProduct({ title, brand, price })
-      Swal.fire({
-        icon: "success",
-        title: "Product Created",
-        text: "New product has been created successfully.",
-      })
+      notify("New product has been created successfully.", "success")
       onClose()
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to create product. Please try again later.",
-      })
+      notify("Failed to create product. Please try again later.", "error")
     } finally {
       dispatch({ type: "SET_LOADING", isLoading: false })
       dispatch({ type: "RESET_FIELDS" })
