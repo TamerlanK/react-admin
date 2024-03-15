@@ -1,2 +1,0 @@
-1. Notification (SweerAlert2)
-2. Lightbox
