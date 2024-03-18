@@ -1,10 +1,8 @@
-import { createColumnHelper } from "@tanstack/react-table"
-import { ProductType } from "../types"
 import { useState } from "react"
+import { createColumnHelper } from "@tanstack/react-table"
 import { deleteProduct } from "../../actions/product"
 import { notify } from "../utils"
-import { FaEdit, FaTrash } from "react-icons/fa"
-import EditProductModal from "../../components/modals/EditProductModal"
+import Swal from "sweetalert2"
 
 import PhotoAlbum, { Photo } from "react-photo-album"
 import Lightbox, { SlideImage } from "yet-another-react-lightbox"
@@ -13,11 +11,15 @@ import {
   Slideshow,
   Thumbnails,
   Zoom,
+  Counter,
 } from "yet-another-react-lightbox/plugins"
+import EditProductModal from "../../components/modals/EditProductModal"
+import { ProductType } from "../types"
+import { FaEdit, FaTrash } from "react-icons/fa"
 
 import "yet-another-react-lightbox/styles.css"
 import "yet-another-react-lightbox/plugins/thumbnails.css"
-import Swal from "sweetalert2"
+import "yet-another-react-lightbox/plugins/counter.css"
 
 const columnHelper = createColumnHelper<ProductType>()
 
@@ -46,7 +48,17 @@ export const productColumns = [
             open={isLightboxOpen}
             close={() => setIsLightboxOpen(false)}
             slides={photos}
-            plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+            plugins={[Fullscreen, Slideshow, Thumbnails, Zoom, Counter]}
+            counter={{
+              container: {
+                style: {
+                  top: "unset",
+                  bottom: 0,
+                  left: "50%",
+                  transform: "translateX(-50%)"
+                },
+              },
+            }}
           />
           <PhotoAlbum
             photos={photos as Photo[]}
