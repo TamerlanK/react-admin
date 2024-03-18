@@ -16,10 +16,13 @@ import {
   Todos,
   Quotes,
 } from "./pages"
+import UserDetails from "./pages/UserDetails"
+import NotFound from "./pages/NotFound"
 
 const App: React.FC = () => {
   const auth = useAuth()
   const { collapsed } = useSidebar()
+  console.log(auth.user)
 
   return (
     <div className="flex flex-col h-screen antialiased">
@@ -44,8 +47,10 @@ const App: React.FC = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/products" element={<Products />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/users/:id" element={<UserDetails />} />
               <Route path="/todos" element={<Todos />} />
               <Route path="/quotes" element={<Quotes />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/" element={<Navigate to="/login" />} />
           </Routes>

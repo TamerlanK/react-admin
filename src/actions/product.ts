@@ -11,7 +11,7 @@ export const deleteProduct = async (id: number) => {
     return response.data
   } catch (error: any) {
     console.error("Error deleting product:", error)
-    throw new Error("Error deleting product: " + error.message)
+    throw new Error(error)
   }
 }
 
@@ -26,8 +26,8 @@ export const updateProduct = async (
     )
     console.log(`Product with ID ${id} updated successfully`)
     console.log(response.data)
-  } catch (error) {
-    throw error
+  } catch (error: any) {
+    throw new Error(error)
   }
 }
 
@@ -40,8 +40,8 @@ export const addProduct = async (data: Omit<ProductType, "id">) => {
     )
     console.log(`New product added`)
     console.log(response.data)
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error adding product:", error)
-    throw error
+    throw new Error(error)
   }
 }

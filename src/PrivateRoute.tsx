@@ -3,7 +3,7 @@ import { useAuth } from "./context/AuthProvider"
 
 const PrivateRoute = () => {
   const user = useAuth()
-  if (!user.token) return <Navigate to="/login" />
+  if (!user || !user.token) return <Navigate to="/login" />
   return <Outlet />
 }
 

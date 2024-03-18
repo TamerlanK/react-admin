@@ -20,3 +20,16 @@ export const notify = (message: string, type: NotificationType) => {
       Swal.fire("Notification", message, "info")
   }
 }
+
+export const fireDeleteConfirmationAlert = async () => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "No, cancel!",
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+  })
+
+  return result.isConfirmed
+}

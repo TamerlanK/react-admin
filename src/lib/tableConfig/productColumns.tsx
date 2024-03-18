@@ -20,6 +20,7 @@ import { FaEdit, FaTrash } from "react-icons/fa"
 import "yet-another-react-lightbox/styles.css"
 import "yet-another-react-lightbox/plugins/thumbnails.css"
 import "yet-another-react-lightbox/plugins/counter.css"
+import CustomLightbox from "../../components/CustomLightbox"
 
 const columnHelper = createColumnHelper<ProductType>()
 
@@ -28,47 +29,7 @@ export const productColumns = [
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("thumbnail", {
-    cell: (info) => {
-      const photos: SlideImage[] = info.row.original.images.map((image) => ({
-        src: image,
-      }))
-
-      const [isLightboxOpen, setIsLightboxOpen] = useState(false)
-      const [index, setIndex] = useState(-1)
-
-      return (
-        <>
-          <img
-            onClick={() => setIsLightboxOpen(true)}
-            className="w-12 mx-auto object-cover"
-            src={info.getValue()}
-          />
-
-          <Lightbox
-            open={isLightboxOpen}
-            close={() => setIsLightboxOpen(false)}
-            slides={photos}
-            plugins={[Fullscreen, Slideshow, Thumbnails, Zoom, Counter]}
-            counter={{
-              container: {
-                style: {
-                  top: "unset",
-                  bottom: 0,
-                  left: "50%",
-                  transform: "translateX(-50%)"
-                },
-              },
-            }}
-          />
-          <PhotoAlbum
-            photos={photos as Photo[]}
-            layout="rows"
-            targetRowHeight={150}
-            onClick={({ index }) => setIndex(index)}
-          />
-        </>
-      )
-    },
+    cell: (info) => <CustomLightbox images={info.row.original.images} thumbnailImg={info.getValue()}/>,
   }),
   columnHelper.accessor("title", {
     cell: (info) => info.getValue(),

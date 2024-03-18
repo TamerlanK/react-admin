@@ -8,8 +8,9 @@ export const deleteUser = async (id: number) => {
     )
     console.log(`User with ID ${id} deleted successfully`)
     console.log(response.data)
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting user:", error)
+    throw new Error(error)
   }
 }
 
@@ -24,7 +25,8 @@ export const updateUser = async (
     )
     console.log(`User with ID ${id} updated successfully`)
     console.log(response.data)
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating user:", error)
+    throw new Error(error)
   }
 }

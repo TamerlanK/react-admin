@@ -26,11 +26,8 @@ const Register: React.FC = () => {
       if (!response.ok) {
         throw new Error("Registration failed")
       }
-
-      // Registration successful, you can redirect the user or show a success message
     } catch (error) {
       console.error("Error during registration:", error)
-      // Handle error, show error message to the user, etc.
     }
   }
 
