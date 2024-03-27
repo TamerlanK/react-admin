@@ -18,6 +18,7 @@ import {
 } from "./pages"
 import UserDetails from "./pages/UserDetails"
 import NotFound from "./pages/NotFound"
+import UserCreate from "./pages/UserCreate"
 
 const App: React.FC = () => {
   const auth = useAuth()
@@ -48,6 +49,7 @@ const App: React.FC = () => {
               <Route path="/products" element={<Products />} />
               <Route path="/users" element={<Users />} />
               <Route path="/users/:id" element={<UserDetails />} />
+              <Route path="/users/create" element={<UserCreate />} />
               <Route path="/todos" element={<Todos />} />
               <Route path="/quotes" element={<Quotes />} />
               <Route path="*" element={<NotFound />} />

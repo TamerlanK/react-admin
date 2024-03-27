@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { FaEdit, FaTrash } from "react-icons/fa"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { deleteUser } from "../../actions/user"
 import { UserType } from "../types"
 import { fireDeleteConfirmationAlert, notify } from "../utils"
@@ -29,8 +29,8 @@ export const userColumns = [
     cell: ({ row }) => {
       const { id: userId } = row.original
       const navigate = useNavigate()
-
-      const handleEdit = () => navigate(`/users/${userId}`)
+      const handleEdit = () =>
+        navigate(`/users/${userId}`, { state: { userData: row.original } })
 
       const handleDelete = async (id: number) => {
         const confirmed = await fireDeleteConfirmationAlert()

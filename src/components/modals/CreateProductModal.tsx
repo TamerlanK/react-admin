@@ -79,7 +79,7 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
     const { title, brand, price } = state.product
     try {
       dispatch({ type: "SET_LOADING", isLoading: true })
-      await addProduct({ title, brand, price })
+      await addProduct({ title, brand, price})
       notify("New product has been created successfully.", "success")
       onClose()
     } catch (error) {

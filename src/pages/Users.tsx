@@ -3,7 +3,7 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable
+  useReactTable,
 } from "@tanstack/react-table"
 import React, { useState } from "react"
 
@@ -20,10 +20,13 @@ import {
 } from "../components/table"
 
 import { userColumns } from "../lib/tableConfig/userColumns"
+import { FaPlus } from "react-icons/fa"
+import { useNavigate } from "react-router-dom"
 
 const Products: React.FC = () => {
   const { data, loading } = useFetch("https://dummyjson.com/users")
   const [sorting, setSorting] = useState<SortingState>([])
+  const navigate = useNavigate()
 
   const table = useReactTable({
     data: data?.users,
@@ -48,7 +51,15 @@ const Products: React.FC = () => {
 
   return (
     <Wrapper>
-      <HeadText>Users</HeadText>
+      <div className="w-full flex justify-between items-center">
+        <HeadText>Users</HeadText>
+        <button
+          className="p-2 rounded-md bg-blue-600"
+          onClick={() => navigate(`create`)}
+        >
+          <FaPlus className="text-white size-3" />
+        </button>
+      </div>
 
       <table className="w-full table-auto">
         <TableHeader headerGroups={table.getHeaderGroups()} />

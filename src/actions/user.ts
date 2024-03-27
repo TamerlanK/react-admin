@@ -30,3 +30,19 @@ export const updateUser = async (
     throw new Error(error)
   }
 }
+
+export const createUser = async (
+  data: Partial<Omit<UserType, "id">>
+) => {
+  try {
+    const response = await axiosInstance.post(
+      `https://dummyjson.com/users/add`,
+      data
+    )
+    console.log(`User with ${response.data?.id} created successfully`)
+    console.log(response.data)
+  } catch (error: any) {
+    console.error("Error creating user:", error)
+    throw new Error(error)
+  }
+}
