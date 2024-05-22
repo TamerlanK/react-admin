@@ -1,10 +1,9 @@
 import React, { useReducer } from "react"
 import { updateProduct } from "../../actions/product"
 import { ProductType } from "../../lib/types"
+import { notify } from "../../lib/utils"
 import Input from "../Input"
 import Modal from "../Modal"
-import Swal from "sweetalert2"
-import { notify } from "../../lib/utils"
 
 interface EditProductModalProps {
   isOpen: boolean

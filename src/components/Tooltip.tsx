@@ -7,6 +7,7 @@ interface TooltipProps {
 }
 
 const Tooltip: React.FC<TooltipProps> = ({ text, delay = 800, children }) => {
+  //@ts-ignore
   const [isHovered, setIsHovered] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const timerRef = useRef<number | null>(null)

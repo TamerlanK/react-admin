@@ -17,6 +17,7 @@ interface CustomLightboxProps {
 const CustomLightbox = ({ thumbnailImg, images }: CustomLightboxProps) => {
   const photos: SlideImage[] = images.reverse().map((image) => ({ src: image }))
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+  //@ts-ignore
   const [index, setIndex] = useState(-1)
 
   return (

@@ -1,25 +1,16 @@
-import { useState } from "react"
 import { createColumnHelper } from "@tanstack/react-table"
+import { useState } from "react"
+import Swal from "sweetalert2"
 import { deleteProduct } from "../../actions/product"
 import { notify } from "../utils"
-import Swal from "sweetalert2"
 
-import PhotoAlbum, { Photo } from "react-photo-album"
-import Lightbox, { SlideImage } from "yet-another-react-lightbox"
-import {
-  Fullscreen,
-  Slideshow,
-  Thumbnails,
-  Zoom,
-  Counter,
-} from "yet-another-react-lightbox/plugins"
+import { FaEdit, FaTrash } from "react-icons/fa"
 import EditProductModal from "../../components/modals/EditProductModal"
 import { ProductType } from "../types"
-import { FaEdit, FaTrash } from "react-icons/fa"
 
-import "yet-another-react-lightbox/styles.css"
-import "yet-another-react-lightbox/plugins/thumbnails.css"
 import "yet-another-react-lightbox/plugins/counter.css"
+import "yet-another-react-lightbox/plugins/thumbnails.css"
+import "yet-another-react-lightbox/styles.css"
 import CustomLightbox from "../../components/CustomLightbox"
 
 const columnHelper = createColumnHelper<ProductType>()

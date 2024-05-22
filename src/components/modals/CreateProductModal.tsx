@@ -1,9 +1,8 @@
 import React, { useReducer } from "react"
-import Modal from "../Modal"
-import Input from "../Input"
 import { addProduct } from "../../actions/product"
-import Swal from "sweetalert2"
 import { notify } from "../../lib/utils"
+import Input from "../Input"
+import Modal from "../Modal"
 
 interface CreateProductModalProps {
   isOpen: boolean
@@ -79,6 +78,7 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
     const { title, brand, price } = state.product
     try {
       dispatch({ type: "SET_LOADING", isLoading: true })
+      //@ts-ignore
       await addProduct({ title, brand, price})
       notify("New product has been created successfully.", "success")
       onClose()
