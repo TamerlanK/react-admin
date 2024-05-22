@@ -63,13 +63,13 @@ const Header: React.FC = () => {
         to="/login"
         className="text-gray-400 hover:text-gray-800 transition-colors"
       >
-        Daxil ol
+        Log in
       </Link>
       <Link
         to="/register"
         className="text-gray-400 hover:text-gray-800 transition-colors"
       >
-        Qeydiyyat
+        Register
       </Link>
     </>
   )
